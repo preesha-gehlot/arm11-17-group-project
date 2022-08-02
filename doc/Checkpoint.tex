@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{C Project Interim Checkpoint report}
+\usepackage[margin=1.6in]{geometry}
+\author{bp821, elm20, pg721, rk1121}
+\date{8th June 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{How we split the work }
+
+To create the emulator, we decided to split up different tasks between the four members. We had an initial meeting discussing the emulator, how we can build it and how we could divide the work. We decided that Rishi would create the Binary file loader, Bjorna would handle the fetch part of the process, and Preesha would handle the Decode part of the process. For the execute part of the fetch decode execute cycle, we split the implementation of the four instructions between group members. Rishi handled the data processing instruction, Bjorna handled the Branch and Single Data Transfer Instruction, and Elsa handled the multiply instruction.  While each group member worked on their code individually, every day we met up to discuss issues that we were facing and have other group members check over our code and fix any compilation errors.
+
+There were also discussions regarding the design of our code and respective changes were made by all group members. Preesha created the barrel shifter and utility methods to rotate and sign-extend binary values. Rishi then handled CPSR and the pipelining process which brought together the separate fetch decode and execute methods we had created. Preesha and Elsa handled the compilation of the code and created the makeFiles. After the code was mostly complete, Rishi and Preesha handled debugging.
+
+\section{How the group is working }
+
+Currently, we think that although we were able to finish Emulator, the delegation of work could have been more efficient as we left testing of the entire code till the end. Another issue we faced is some people could not start their part of the code until one had finished. For the assembler and extension, we plan to test and debug as we go and split up work into smaller sections so that everyone has defined tasks that they can be doing and try not to delegate work that depends on previous tasks that other group members may be working on.
+
+\section{Structure of Emulator and reusability for the Assembler }
+
+First, we created a binary file loader file for the emulator. We loaded this into the memory that was represented as an array in our processor.
+
+We then created a struct that would be used across the fetch decode execute cycle that would essentially represent the state of the processor. This contained an array that represented the memory, an array that represented the current state of the registers, and an address that would represent the end of binary instructions and aid in the implementation of the termination of the processor. We also included a ‘fetched’ member in our struct that would store the fetched instruction and a ‘decoded’ member in  our struct that would store the decoded instruction.
+
+Our decode used hexadecimal masks on the instruction to discern the type of the current decoded instruction. Depending on the type of instruction, we then split up each instruction into the components it contained (for example multiply contains the condition, accumulator bit, set bit, destination register and registers rm, rn, and rs). We stored each decoded instruction in a union, as only one instruction is decoded at once, our union could be any one of the four types of instruction and would store the important bits of the instruction (such as the bits that represented registers) in separate sections.
+
+We then created separate functions for execution depending on the instruction type. For each instruction we checked if the condition field is satisfied, as this was utilised by all instructions, we created one function for checking the condition. We also created a common function for shifting fields in the Single Data Transfer instruction and Data Processing Instruction. Each execution function for each instruction did arithmetic operations or shifts on values from memory, immediate values or values in registers and changed the values of registers stored within the registers array.
+
+In order to combine these individual parts, we created the pipeline. To do this, we used a while loop to fetch, decode then execute the instructions. Fetched instructions were stored in the state struct and that state struct was then passed to the decoded and executor.
+
+For the Assembler, we will reuse definitions.h, primarily the structs we have created for the different instructions, which will be useful when we encode in the assembler. We will also structure the assembler as we did with the emulator, where all the different instructions will be in different files.
+
+\section{Later challenges and how to mitigate these difficulties}
+
+We might initially struggle with implementing a data structure, as there may be discussions on which data structure would be best to implement. Furthermore, due to our lack of experience with pointers and data structures in C we may run into segmentation faults and compilation errors as we may not initially implement the data structure correctly.
+
+One of the biggest problems we encountered was getting the emulator to compile all together. We were able to test each function individually but had issues with headers being included multiple times when compiling the entire emulator.
+
+We will mitigate these difficulties by getting more familiar with the different types of data structures through further research and having more than one person working on it.
+
+\end{document}
