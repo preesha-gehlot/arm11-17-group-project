@@ -1,27 +1,3 @@
 ARM11 Group Project
 
-bp821, elm20, pg721, rk1121,
-
--------------
-
-Notes:
-  17 registers:
-    init at 0
-    32-bit
-    registers 0-12 = general purpose
-    registers 13-14 = splr (ignored)
-    registers 15 = pc
-    registers 16 = cpsr
-
-  Memory:
-    init at 0
-    16-bit
-    64KB
-    Stored in an array
-    2^16 spaces
-
-  Instructions:
-    32-bit "words"
-
-how to tell if something is a data processing instruction:
-get a mask and add with current bits to get
+First year group project creating an ARM assembler and emulator in C
